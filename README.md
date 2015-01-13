@@ -44,5 +44,5 @@ Your .domians file should look like this **"zzzzzzz,zzzzzzz"** and your .resourc
 
 Original script by [Andrew Childs](https://github.com/andrewchilds/linode-dyn-dns)
 
-Modified by [Rune Gulbrandsøy] (http://ghostblog.be)
+
 
