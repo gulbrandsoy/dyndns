@@ -36,9 +36,9 @@ If you have one domain ID but several resource IDs you have to repeat your domai
 
 eg. 
 
-If you have the domain ID zzzzzzz for the domain home.net and the resource ID aaaa for the resource bedroom.home.net and bbbb for the resource livingroom.home.net.
+If you have the domain ID *zzzzzzz* for the domain **home.net** and the resource ID *aaaa* for the resource **bedroom.home.net** and *bbbb* for the resource **livingroom.home.net**.
 
-Your .domians file should look like this "zzzzzzz,zzzzzzz" and your .resources file like this "aaaa,bbbb". Each resource ID should be paired with a domain ID!
+Your .domians file should look like this **"zzzzzzz,zzzzzzz"** and your .resources file like this **"aaaa,bbbb"**. Each resource ID should be paired with a domain ID!
 
 Original script by [Andrew Childs](https://github.com/andrewchilds/linode-dyn-dns)
 
