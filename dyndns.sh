@@ -90,7 +90,7 @@ function update {
 	
 	element_count=${#DOMAINIDS[@]}
 	index=0
-	[ "$IP_OLD" != "$IP_NEW" ] || [ "$IPSIX_OLD" != "$IP_NEW_SIX" ] && [ "$IP_NEW" != "" ] && {
+	[ "$IP_OLD" != "$IP_NEW" ] || [ "$IPSIX_OLD" != "$IP_NEW_SIX" ] && [ "$IP_NEW" != "" ] || [ "$IP_NEW_SIX" != "" ] && {
 		while [ "$index" -lt "$element_count" ]
 		do
 		update_resource_target ${DOMAINIDS[$index]} ${RESCOURCEIDS[$index]}
