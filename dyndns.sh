@@ -26,6 +26,7 @@ IFS=',' read -a RESCOURCEIDS <<< "$RESOURCE"
 
 function get_ip {
 	local IP=`curl --silent http://checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
+	
 	[ "$IP" == "" ] && {
 		echo "[`date`] dyndns lookup failed, checking whatismyipaddress..." >> $LOG_FILE
 		IP=`curl --silent http://bot.whatismyipaddress.com`
@@ -35,6 +36,12 @@ function get_ip {
 		exit 1;
 	}
 	echo $IP
+}
+
+function get_ip_six {
+	IP_SIX=`curl --silent http://ident.me/`
+	[[ -z "$IP_SIX" ]] && IP_SIX="N/A"
+	echo $IP_SIX
 }
 
 function get_cached_ip {
@@ -74,6 +81,8 @@ function update_resource_target {
 function update {
 	IP_OLD=`get_cached_ip`
 	IP_NEW=`get_ip`
+	IP_NEW_SIX=`get_ip_six`
+	
 	element_count=${#DOMAINIDS[@]}
 	index=0
 	[ "$IP_OLD" != "$IP_NEW" ] && [ "$IP_NEW" != "" ] && {
@@ -82,7 +91,7 @@ function update {
 		update_resource_target ${DOMAINIDS[$index]} ${RESCOURCEIDS[$index]}
 		let "index = $index + 1"
 		done
-		echo "[`date`] IP changed from $IP_OLD to $IP_NEW" >> $LOG_FILE
+		echo "[`date`] IP changed from $IP_OLD to $IP_NEW ($IP_NEW_SIX)" >> $LOG_FILE
 	}
 
 	[ "$IP_NEW" != "" ] && {
