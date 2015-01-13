@@ -3,6 +3,8 @@ This is a simple bash script to update a dynamic IP with the Linode API.
 
 It can update as many domains as you like, but only for one Linode account/API Key.
 
+It supports both IPv4 and IPv6. Linode will use IPv6 if your system is broadcasting that. 
+
 #How to use
 
 All commands are in quotes ("")!
