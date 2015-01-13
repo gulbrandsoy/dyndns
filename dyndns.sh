@@ -16,7 +16,7 @@ RESOURCE=`cat $MY_PATH/.resources 2>/dev/null`
 LOG_FILE="$MY_PATH/dns.log"
 
 CACHED_IP_FILE="$MY_PATH/.ip"
-
+CACHED_IPSIX_FILE="$MY_PATH/.ipsix"
 LINODE_API_URL="https://api.linode.com/?api_key=$MY_API_KEY"
 IFS=',' read -a DOMAINIDS <<< "$DOMAIN"
 IFS=',' read -a RESCOURCEIDS <<< "$RESOURCE"
@@ -41,6 +41,7 @@ function get_ip {
 function get_ip_six {
 	IP_SIX=`curl --silent http://ident.me/`
 	[[ -z "$IP_SIX" ]] && IP_SIX="N/A"
+	
 	echo $IP_SIX
 }
 
@@ -48,6 +49,9 @@ function get_cached_ip {
 	cat $CACHED_IP_FILE 2>/dev/null
 }
 
+function get_cached_ip_six {
+	cat $CACHED_IPSIX_FILE 2>/dev/null
+}
 
 
 ##### LINODE API HELPERS
@@ -80,29 +84,34 @@ function update_resource_target {
 
 function update {
 	IP_OLD=`get_cached_ip`
+	IPSIX_OLD=`get_cached_ip_six`
 	IP_NEW=`get_ip`
 	IP_NEW_SIX=`get_ip_six`
 	
 	element_count=${#DOMAINIDS[@]}
 	index=0
-	[ "$IP_OLD" != "$IP_NEW" ] && [ "$IP_NEW" != "" ] && {
+	[ "$IP_OLD" != "$IP_NEW" ] || [ "$IPSIX_OLD" != "$IP_NEW_SIX" ] && [ "$IP_NEW" != "" ] && {
 		while [ "$index" -lt "$element_count" ]
 		do
 		update_resource_target ${DOMAINIDS[$index]} ${RESCOURCEIDS[$index]}
 		let "index = $index + 1"
 		done
-		echo "[`date`] IP changed from $IP_OLD to $IP_NEW ($IP_NEW_SIX)" >> $LOG_FILE
+		echo "[`date`] IP changed from $IP_OLD ($IPSIX_OLD) to $IP_NEW ($IP_NEW_SIX)" >> $LOG_FILE
 	}
 
 	[ "$IP_NEW" != "" ] && {
 		echo $IP_NEW > $CACHED_IP_FILE
 	}
+	[ "$IP_NEW_SIX" != "" ] && {
+		echo $IP_NEW_SIX > $CACHED_IPSIX_FILE
+	}
 }
 
 function dns_info {
 	IP=`get_cached_ip`
+	IPSIX=`get_cached_ip_six`
 	echo "You have the following domainIDs: $DOMAIN and resourceIDs: $RESOURCE";
-	echo "Your cached IP is: $IP";
+	echo "Your cached IP is: $IP ($IPSIX)";
 	echo "Your log file is located here: $LOG_FILE";
 	}
 
