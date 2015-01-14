@@ -90,7 +90,7 @@ function update {
 	
 	element_count=${#DOMAINIDS[@]}
 	index=0
-	[ "$IP_OLD" != "$IP_NEW" ] || [ "$IPSIX_OLD" != "$IP_NEW_SIX" ] && [ "$IP_NEW" != "" ] || [ "$IP_NEW_SIX" != "" ] && {
+	[ "$IP_OLD" != "$IP_NEW" ] || [ "$IPSIX_OLD" != "$IP_NEW_SIX" ] && [ "$IP_NEW" != "" ] && {
 		while [ "$index" -lt "$element_count" ]
 		do
 		update_resource_target ${DOMAINIDS[$index]} ${RESCOURCEIDS[$index]}
@@ -111,7 +111,7 @@ function dns_info {
 	IP=`get_cached_ip`
 	IPSIX=`get_cached_ip_six`
 	echo "You have the following domainIDs: $DOMAIN and resourceIDs: $RESOURCE";
-	echo "Your cached IP is: $IP ($IPSIX)";
+	echo "Your cached IPv4 : $IP (IPv6 : $IPSIX)";
 	echo "Your log file is located here: $LOG_FILE";
 	}
 
