@@ -39,7 +39,7 @@ function get_ip {
 }
 
 function get_ip_six {
-	IP_SIX=`curl --silent http://ident.me/`
+	IP_SIX=`curl --silent http://v6.ident.me/`
 	[[ -z "$IP_SIX" ]] && IP_SIX="N/A"
 	
 	echo $IP_SIX
