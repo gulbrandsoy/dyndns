@@ -41,10 +41,18 @@ function get_ip {
 function get_ip_six {
 	IP_SIX=`curl --silent http://v6.ident.me/`
 	[[ -z "$IP_SIX" ]] && IP_SIX="N/A"
-	
+	[ "$IP_SIX" == "N/A" ] && IP_SIX=`get_sec_ipsix`
+	[[ -z "$IP_SIX" ]] && IP_SIX="N/A"
 	echo $IP_SIX
 }
 
+function get_sec_ipsix {
+	regex="(::|(([a-fA-F0-9]{1,4}):){7}(([a-fA-F0-9]{1,4}))|(:(:([a-fA-F0-9]{1,4})){1,6})|((([a-fA-F0-9]{1,4}):){1,6}:)|((([a-fA-F0-9]{1,4}):)(:([a-fA-F0-9]{1,4})){1,6})|((([a-fA-F0-9]{1,4}):){2}(:([a-fA-F0-9]{1,4})){1,5})|((([a-fA-F0-9]{1,4}):){3}(:([a-fA-F0-9]{1,4})){1,4})|((([a-fA-F0-9]{1,4}):){4}(:([a-fA-F0-9]{1,4})){1,3})|((([a-fA-F0-9]{1,4}):){5}(:([a-fA-F0-9]{1,4})){1,2}))"
+	WEBPAGE=`curl --silent http://ipv6.whatismyv6.com`
+	
+	ipsixtwo=$(egrep -o -s "$regex" <<<"$WEBPAGE")
+	echo $ipsixtwo
+}
 function get_cached_ip {
 	cat $CACHED_IP_FILE 2>/dev/null
 }
@@ -110,8 +118,10 @@ function update {
 function dns_info {
 	IP=`get_cached_ip`
 	IPSIX=`get_cached_ip_six`
-	echo "You have the following domainIDs: $DOMAIN and resourceIDs: $RESOURCE";
-	echo "Your cached IPv4 : $IP (IPv6 : $IPSIX)";
+	echo "You have the following domainIDs : $DOMAIN"; 
+	echo "You have the following resourceIDs : $RESOURCE";
+	echo "Your cached IPv4 : $IP"; 
+	echo "Your cached IPv6 : $IPSIX";
 	echo "Your log file is located here: $LOG_FILE";
 	}
 
