@@ -25,8 +25,11 @@ IFS=',' read -a RESCOURCEIDS <<< "$RESOURCE"
 ##### IP FUNCTIONS
 
 function get_ip {
-	local IP=`curl --silent http://checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
-	
+	local IP=`curl --silent http://ip4.iurl.no`
+	[ "$IP" == "" ] && {
+		echo "[`date`] iURL.no lookup failed, checking dyndns..." >> $LOG_FILE
+	 	IP=`curl --silent http://checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
+	}
 	[ "$IP" == "" ] && {
 		echo "[`date`] dyndns lookup failed, checking whatismyipaddress..." >> $LOG_FILE
 		IP=`curl --silent http://bot.whatismyipaddress.com`
@@ -39,7 +42,9 @@ function get_ip {
 }
 
 function get_ip_six {
-	IP_SIX=`curl --silent http://v6.ident.me/`
+	IP_SIX=`curl --silent http://ip.iurl.no/`
+	[[ -z "$IP_SIX" ]] && IP_SIX="N/A"
+	[ "$IP_SIX" == "N/A" ] && IP_SIX=`curl --silent http://v6.ident.me/`
 	[[ -z "$IP_SIX" ]] && IP_SIX="N/A"
 	[ "$IP_SIX" == "N/A" ] && IP_SIX=`get_sec_ipsix`
 	[[ -z "$IP_SIX" ]] && IP_SIX="N/A"
@@ -87,7 +92,11 @@ function update_resource_target {
 			echo "Usage: update_resource_target domain resource" 1>&2;
 			exit 1;
 	}
-	echo $(curl --silent -g $LINODE_API_URL\&api_action=domain.resource.update\&DomainID=$1\&ResourceID=$2\&TTL_sec=300\&Target=[remote_addr])
+	IP_NEW=`get_ip`
+	# To force use of IPv4 leave the two next line as they are. To use IPv6 (if you broadcast that), switch the comment on the next two lines.
+	
+	#echo $(curl --silent -g $LINODE_API_URL\&api_action=domain.resource.update\&DomainID=$1\&ResourceID=$2\&TTL_sec=300\&Target=[remote_addr])
+	echo $(curl --silent -g $LINODE_API_URL\&api_action=domain.resource.update\&DomainID=$1\&ResourceID=$2\&TTL_sec=300\&Target=$IP_NEW)
 }
 
 function update {
